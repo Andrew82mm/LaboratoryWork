@@ -24,4 +24,3 @@ depend: $(SRCS)
 	makedepend $(SRCS)
 
 .PHONY: all clean depend run_mem
-

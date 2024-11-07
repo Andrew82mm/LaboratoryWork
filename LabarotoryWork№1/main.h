@@ -1,4 +1,4 @@
-/* Sergienko Andrey b82 group st135882@student.spbu.ru */ 
+/* Sergienko Andrey b82 group st135882@student.spbu.ru */
 #ifndef MAIN_H
 #define MAIN_H
 
@@ -6,7 +6,8 @@
 
 #pragma pack(push, 1)
 
-struct BITMAPFILEHEADER {
+struct BITMAPFILEHEADER
+{
     uint16_t bfType;
     uint32_t bfSize;
     uint16_t bfReserved1;
@@ -14,7 +15,8 @@ struct BITMAPFILEHEADER {
     uint32_t bfOffBits;
 };
 
-struct BITMAPINFOHEADER {
+struct BITMAPINFOHEADER
+{
     uint32_t biSize;
     int32_t biWidth;
     int32_t biHeight;
@@ -28,7 +30,8 @@ struct BITMAPINFOHEADER {
     uint32_t biClrImportant;
 };
 
-struct RGBQUAD {
+struct RGBQUAD
+{
     uint8_t rgbBlue;
     uint8_t rgbGreen;
     uint8_t rgbRed;

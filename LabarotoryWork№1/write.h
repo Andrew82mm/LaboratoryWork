@@ -1,4 +1,4 @@
-/* Sergienko Andrey b82 group st135882@student.spbu.ru */ 
+/* Sergienko Andrey b82 group st135882@student.spbu.ru */
 #ifndef WRITE_H
 #define WRITE_H
 

@@ -1,34 +1,43 @@
-/* Sergienko Andrey b82 group st135882@student.spbu.ru */ 
+/* Sergienko Andrey b82 group st135882@student.spbu.ru */
 #include "filter.h"
 #include <cmath>
 
-void applyGauss(RGBQUAD **rgbInfo, unsigned int width, unsigned int height) {
+void applyGauss(RGBQUAD **rgbInfo, unsigned int width, unsigned int height)
+{
     const int kernelSize = 3;
-    const float kernel[kernelSize][kernelSize] = {
+    const float kernel[kernelSize][kernelSize] =
+    {
         { 1.0f, 4.0f, 1.0f },
         { 4.0f, 16.0f, 4.0f },
         { 1.0f, 4.0f, 1.0f }
     };
-    const float factor = 1.0f / 36.0f; 
+    const float factor = 1.0f / 36.0f;
     const float increaseFactor = 1.0f;
     float normalizedKernel[kernelSize][kernelSize];
-    for (int y = 0; y < kernelSize; ++y) {
-        for (int x = 0; x < kernelSize; ++x) {
+    for (int y = 0; y < kernelSize; ++y)
+    {
+        for (int x = 0; x < kernelSize; ++x)
+        {
             normalizedKernel[y][x] = kernel[y][x] * factor * increaseFactor;
         }
     }
 
     RGBQUAD **temp = new RGBQUAD*[height];
-    for (unsigned int i = 0; i < height; ++i) {
+    for (unsigned int i = 0; i < height; ++i)
+    {
         temp[i] = new RGBQUAD[width];
     }
 
-    for (unsigned int y = 1; y < height - 1; ++y) {
-        for (unsigned int x = 1; x < width - 1; ++x) {
+    for (unsigned int y = 1; y < height - 1; ++y)
+    {
+        for (unsigned int x = 1; x < width - 1; ++x)
+        {
             float red = 0, green = 0, blue = 0;
 
-            for (int ky = -1; ky <= 1; ++ky) {
-                for (int kx = -1; kx <= 1; ++kx) {
+            for (int ky = -1; ky <= 1; ++ky)
+            {
+                for (int kx = -1; kx <= 1; ++kx)
+                {
                     RGBQUAD &pixel = rgbInfo[y + ky][x + kx];
                     red += pixel.rgbRed * normalizedKernel[ky + 1][kx + 1];
                     green += pixel.rgbGreen * normalizedKernel[ky + 1][kx + 1];
@@ -42,7 +51,8 @@ void applyGauss(RGBQUAD **rgbInfo, unsigned int width, unsigned int height) {
         }
     }
 
-    for (unsigned int i = 0; i < height; ++i) {
+    for (unsigned int i = 0; i < height; ++i)
+    {
         delete[] rgbInfo[i];
         rgbInfo[i] = temp[i];
     }

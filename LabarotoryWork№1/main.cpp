@@ -1,12 +1,14 @@
-/* Sergienko Andrey b82 group st135882@student.spbu.ru */ 
+/* Sergienko Andrey b82 group st135882@student.spbu.ru */
 #include "read.h"
 #include "write.h"
 #include "rotation.h"
 #include "filter.h"
 #include <iostream>
 
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
+int main(int argc, char *argv[])
+{
+    if (argc < 2)
+    {
         std::cout << "Usage: " << argv[0] << " input_file.bmp" << std::endl;
         return 0;
     }
@@ -16,14 +18,16 @@ int main(int argc, char *argv[]) {
     BITMAPINFOHEADER fileInfoHeader;
     RGBQUAD **rgbInfo = nullptr;
 
-    if (!readBMP(fileName, fileHeader, fileInfoHeader, rgbInfo)) {
+    if (!readBMP(fileName, fileHeader, fileInfoHeader, rgbInfo))
+    {
         return 0;
     }
 
     {
         RGBQUAD **rotatedClockwise = rotate90Clockwise(rgbInfo, fileInfoHeader.biWidth, fileInfoHeader.biHeight);
         std::swap(fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-        if (!writeBMP("rotated_90_clockwise.bmp", fileHeader, fileInfoHeader, rotatedClockwise)) {
+        if (!writeBMP("rotated_90_clockwise.bmp", fileHeader, fileInfoHeader, rotatedClockwise))
+        {
             std::cerr << "Failed to save rotated_90_clockwise.bmp" << std::endl;
         }
         cleanupRGBInfo(rotatedClockwise, fileInfoHeader.biHeight);
@@ -33,7 +37,8 @@ int main(int argc, char *argv[]) {
     {
         RGBQUAD **rotatedCounterClockwise = rotate90CounterClockwise(rgbInfo, fileInfoHeader.biWidth, fileInfoHeader.biHeight);
         std::swap(fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-        if (!writeBMP("rotated_90_counterclockwise.bmp", fileHeader, fileInfoHeader, rotatedCounterClockwise)) {
+        if (!writeBMP("rotated_90_counterclockwise.bmp", fileHeader, fileInfoHeader, rotatedCounterClockwise))
+        {
             std::cerr << "Failed to save rotated_90_counterclockwise.bmp" << std::endl;
         }
         cleanupRGBInfo(rotatedCounterClockwise, fileInfoHeader.biHeight);
@@ -42,7 +47,8 @@ int main(int argc, char *argv[]) {
 
     {
         applyGauss(rgbInfo, fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-        if (!writeBMP("gaussian_filtered.bmp", fileHeader, fileInfoHeader, rgbInfo)) {
+        if (!writeBMP("gaussian_filtered.bmp", fileHeader, fileInfoHeader, rgbInfo))
+        {
             std::cerr << "Failed to save gaussian_filtered.bmp" << std::endl;
         }
     }
