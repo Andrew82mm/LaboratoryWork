@@ -1,3 +1,4 @@
+/* Sergienko Andrey b82 group st135882@student.spbu.ru */ 
 #ifndef READ_H
 #define READ_H
 

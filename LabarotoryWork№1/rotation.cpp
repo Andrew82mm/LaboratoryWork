@@ -1,3 +1,4 @@
+/* Sergienko Andrey b82 group st135882@student.spbu.ru */ 
 #include "rotation.h"
 #include <iostream>
 
