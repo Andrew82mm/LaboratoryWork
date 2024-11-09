@@ -1,7 +1,7 @@
 CXX = g++
 CXXFLAGS = -Wall -std=c++17
-SRCS = write.cpp read.cpp filter.cpp main.cpp rotation.cpp
-HEADERS = write.h read.h filters.h main.h rotation.h
+SRCS = bmp_reader.cpp filters.cpp main.cpp rotation.cpp
+HEADERS = bmp_reader.h filters.h main.h rotation.h
 TARGET = main
 OBJS = $(SRCS:.cpp=.o)
 IMAGE_FILES = gaussian_filtered.bmp rotated_90_clockwise.bmp rotated_90_counterclockwise.bmp
