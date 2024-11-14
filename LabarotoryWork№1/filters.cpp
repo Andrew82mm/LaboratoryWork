@@ -3,6 +3,7 @@
 #include <algorithm>
 
 void applyGaussianFilter(RGBQUAD **inf, unsigned int width, unsigned int height) {
+    // Хочется иметь возможность изменять размера ядра
     const int kernelSize = 3;
     const float kernel[kernelSize][kernelSize] = 
     {
