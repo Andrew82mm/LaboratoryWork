@@ -22,7 +22,8 @@ bool readBMP(const char *fileName, BITMAPFILEHEADER &fileHeader, BITMAPINFOHEADE
     int width = fileInfoHeader.biWidth;
     int height = abs(fileInfoHeader.biHeight);
     int padding = (4 - (width * 3) % 4) % 4;
-
+    // Выделяя таким образом память, ты даешь себе возможность ее потерять
+    // Используй либо стандартные контейнеры, либо умные указатели
     rgbInfo = new RGBQUAD*[height];
     for (int i = 0; i < height; ++i)
     {
@@ -35,6 +36,7 @@ bool readBMP(const char *fileName, BITMAPFILEHEADER &fileHeader, BITMAPINFOHEADE
     {
         for (int j = 0; j < width; ++j)
         {
+            // Попиксельное чтение очень неэффективно, читай и пиши построчно
             fileStream.read(reinterpret_cast<char*>(&rgbInfo[i][j]), 3);
             rgbInfo[i][j].rgbReserved = 0;
         }
