@@ -2,7 +2,7 @@
 #define MAIN_H
 
 #include <cstdint>
-
+// У main не должно быть заголовочного файла
 #pragma pack(push, 1) 
 
 struct BITMAPFILEHEADER {
