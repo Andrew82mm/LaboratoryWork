@@ -1,6 +1,8 @@
 #include "rotation.h"
 #include <iostream>
 
+// То, что изменения в заголовках bmp файла происходят за пределами функции -- это плохо
+// Откуда другой программист будет знать, что при использовании этой функции ему нужно самому это делать? 
 RGBQUAD **rotate90Clockwise(RGBQUAD **inf, unsigned int width, unsigned int height) {
     RGBQUAD **rotated = new RGBQUAD*[width];
     for (unsigned int i = 0; i < width; ++i) {
