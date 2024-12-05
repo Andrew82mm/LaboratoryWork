@@ -1,85 +1,66 @@
+/*
+    Andrew Sergienko st135882@student.spbu.ru
+*/
 #include "bmp_reader.h"
 #include <iostream>
+#include <fstream>
 
-bool readBMP(const char *fileName, BITMAPFILEHEADER &fileHeader, BITMAPINFOHEADER &fileInfoHeader, RGBQUAD **&rgbInfo)
+// Method for loading BMP file
+bool BMP_File::Load_BMP_File(const char* file_name)
 {
-    std::ifstream fileStream(fileName, std::ios::binary);
-    if (!fileStream)
+    std::ifstream file(file_name, std::ios::binary);
+    if (!file)
     {
-        std::cerr << "Error opening file '" << fileName << "'. Attention: the file must be located in the same directory as the project files." << std::endl;
+        std::cerr << "Unable to open file: " << file_name << std::endl;
         return false;
     }
 
-    fileStream.read(reinterpret_cast<char*>(&fileHeader), sizeof(fileHeader));
-    if (fileHeader.bfType != 0x4D42)
+    file.read(reinterpret_cast<char*>(&bmp_header), sizeof(BMP_Header));
+    file.read(reinterpret_cast<char*>(&dib_header), sizeof(DIB_Header));
+
+    file_data = new RGB[dib_header.width * dib_header.height];
+
+    int row_size = ((dib_header.width * dib_header.bits_per_pixel + 31) / 32) * 4;
+    file.seekg(bmp_header.pixel_offset, std::ios::beg);
+
+    for (int y = dib_header.height - 1; y >= 0; --y)
     {
-        std::cerr << "Error: '" << fileName << "' is not a BMP file." << std::endl;
-        return false;
+        file.read(reinterpret_cast<char*>(&file_data[y * dib_header.width]), dib_header.width * sizeof(RGB));
+        file.seekg(row_size - dib_header.width * sizeof(RGB), std::ios::cur);
     }
 
-    fileStream.read(reinterpret_cast<char*>(&fileInfoHeader), sizeof(fileInfoHeader));
-
-    int width = fileInfoHeader.biWidth;
-    int height = abs(fileInfoHeader.biHeight);
-    int padding = (4 - (width * 3) % 4) % 4;
-
-    rgbInfo = new RGBQUAD*[height];
-    for (int i = 0; i < height; ++i)
-    {
-        rgbInfo[i] = new RGBQUAD[width];
-    }
-
-    fileStream.seekg(fileHeader.bfOffBits, std::ios::beg);
-
-    for (int i = height - 1; i >= 0; --i)
-    {
-        for (int j = 0; j < width; ++j)
-        {
-            fileStream.read(reinterpret_cast<char*>(&rgbInfo[i][j]), 3);
-            rgbInfo[i][j].rgbReserved = 0;
-        }
-        fileStream.ignore(padding);
-    }
-
+    file.close();
     return true;
 }
 
-bool writeBMP(const char *fileName, const BITMAPFILEHEADER &fileHeader, const BITMAPINFOHEADER &fileInfoHeader, RGBQUAD **rgbInfo)
+// Method for save new file
+void BMP_File::Save_BMP_File(const char* output_filename)
 {
-    std::ofstream fileStream(fileName, std::ios::binary);
-    if (!fileStream)
+    std::ofstream file(output_filename, std::ios::binary);
+    if (!file)
     {
-        std::cerr << "Error creating file '" << fileName << "'." << std::endl;
-        return false;
+        std::cerr << "Unable to open file for writing: " << output_filename << std::endl;
+        return;
     }
 
-    fileStream.write(reinterpret_cast<const char*>(&fileHeader), sizeof(fileHeader));
-    fileStream.write(reinterpret_cast<const char*>(&fileInfoHeader), sizeof(fileInfoHeader));
+    file.write(reinterpret_cast<const char*>(&bmp_header), sizeof(BMP_Header));
+    file.write(reinterpret_cast<const char*>(&dib_header), sizeof(DIB_Header));
 
-    int width = fileInfoHeader.biWidth;
-    int height = abs(fileInfoHeader.biHeight);
-    int padding = (4 - (width * 3) % 4) % 4;
+    file.seekp(dib_header.header_size + 14, std::ios::beg);
 
-    fileStream.seekp(fileHeader.bfOffBits, std::ios::beg);
+    int row_size = ((dib_header.width * dib_header.bits_per_pixel + 31) / 32) * 4;
+    uint32_t padding = row_size - (dib_header.width * sizeof(RGB));
 
-    for (int i = height - 1; i >= 0; --i)
+    for (int y = dib_header.height - 1; y >= 0; --y)
     {
-        for (int j = 0; j < width; ++j)
+        file.write(reinterpret_cast<const char*>(&file_data[y * dib_header.width]), dib_header.width * sizeof(RGB));
+        for (uint32_t p = 0; p < padding; ++p)
         {
-            fileStream.write(reinterpret_cast<const char*>(&rgbInfo[i][j]), 3);
+            file.put(0);
         }
-        fileStream.write("\0\0\0", padding);  //Write null bytes so that each line is a multiple of 4
     }
 
-    return true;
+    file.close();
+    std::cout << "Image saved successfully to " << output_filename << std::endl;
 }
 
-void cleanupinf(RGBQUAD **&inf, unsigned int height)
-{
-    for (unsigned int i = 0; i < height; ++i)
-    {
-        delete[] inf[i];
-    }
-    delete[] inf;
-    inf = nullptr;
-}

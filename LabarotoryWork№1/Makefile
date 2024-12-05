@@ -1,26 +1,21 @@
 CXX = g++
-CXXFLAGS = -Wall -std=c++17
-SRCS = bmp_reader.cpp filters.cpp main.cpp rotation.cpp
-HEADERS = bmp_reader.h filters.h main.h rotation.h
+CXXFLAGS = -std=c++17 -Wall -Wextra -Werror -Wpedantic
+
 TARGET = main
-OBJS = $(SRCS:.cpp=.o)
-IMAGE_FILES = gaussian_filtered.bmp rotated_90_clockwise.bmp rotated_90_counterclockwise.bmp
+ALLNEWBMP = BMP_clockwise.bmp BMP_counterclockwise.bmp BMP_filtered.bmp
+
+SRC_FILES = $(wildcard *.cpp)
+
+OBJ_FILES = $(SRC_FILES:.cpp=.o)
 
 all: $(TARGET)
 
-%.o: %.cpp $(HEADERS)
+$(TARGET): $(OBJ_FILES)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+%.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(TARGET): $(OBJS)
-	$(CXX) $(CXXFLAGS) $^ -o $@
-
-run_mem: $(TARGET)
-	/usr/bin/time -v ./$(TARGET)
-
 clean:
-	rm -f $(OBJS) $(TARGET) $(IMAGE_FILES)
+	rm -f *.o $(TARGET) $(ALLNEWBMP)
 
-depend: $(SRCS)
-	makedepend $(SRCS)
-
-.PHONY: all clean depend run_mem

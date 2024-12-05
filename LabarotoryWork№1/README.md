@@ -1,30 +1,49 @@
-Lab #1 Sergienko Andrey b82 group
-Mail: Personal - andryman1024@gmail.com University - st135882@student.spbu.ru
+**Lab #1**  
+**Sergienko Andrey**  
+**Group**: b82  
+**Email**:  
+- Personal: andryman1024@gmail.com  
+- University: st135882@student.spbu.ru  
 
-Print make. Then ./main Filename.bmp to run it.
+---
 
-This project will apply a Gaussian filter to a provided photo. It is also 90 degrees clockwise and counterclockwise.
+### Program Overview:
+This project applies a Gaussian filter to the provided BMP image, and rotate the image 90 degrees clockwise and counterclockwise.
 
-To run a check on the amount of RAM consumed. Enter "make run_mem". "The Maximum resident set size (kbytes): " line will indicate the amount of RAM consumed. 
-The repository also contains an example photo Makaka.bmp. You can use a photo example to check the program or any other at your discretion.
+---
 
-At the end print make clean
+### How to Use the Program:
+1. **Compile and Run**:  
+   Print `make`. After compiling the program with `make`, You will need to run it with ./main. Than enter the `filename.bmp` image.
+   
+2. **Clean Up**:  
+   Run `make clean` to remove any temporary files created during execution and to delete any modified images.
 
-### Program stages and memory consumption
+---
 
-##### Initial image loading (readBMP):
-The original image is loaded. It takes up 100% of the memory relative to the image size.
-##### Rotate 90 degrees clockwise (rotate90Clockwise):
-Temporary memory consumption: 100% for the original image + 100% for the rotated copy.
-After the rotation is complete, the original image is released, leaving only the new rotated copy.
-Total memory consumption at this stage: temporarily up to 200%, then drops to 100%.
-##### Rotate 90 degrees counterclockwise (rotate90CounterClockwise):
-Before rotation starts, the original is loaded again, again taking up 100% of the memory.
-Rotation temporarily consumes 200% of the memory (original + rotated image).
-After saving and clearing the copy, only the original remains.
-Total memory consumption at this stage: temporarily up to 200%, then again 100%.
-##### Apply Gaussian Filter (applyGaussianFilter):
-The original image is loaded, taking up 100% of the memory.
-The Gaussian filter is applied in place, replacing the pixels of the original image, which does not require an additional copy.
-Once the filter is complete, the memory is freed.
-The total memory consumption at this stage: 100% remains.
+### Explanation of How the Program Works:
+1. **Load BMP Image**:
+    - The BMP file is loaded into memory with the `file_data` buffer. This uses **100%** of the image's memory.
+
+2. **Apply Gaussian Filter**:
+    - A temporary buffer (`file_data`) is created to store the filtered result. This temporarily increases memory usage to **200%** (original image + filtered image).
+    - After filtering, the data is copied back into the original buffer, and the temporary buffer is deleted. Memory usage returns to **100%**.
+
+3. **Rotate Image 90 Degrees Counterclockwise**:
+    - A new buffer (`file_data`) is created for the rotated image. This temporarily increases memory usage to **200%** (original image + rotated image).
+    - After saving the rotated image, the temporary buffer is deleted, returning memory usage to **100%**.
+
+4. **Rotate Image 90 Degrees Clockwise**:
+    - Similar to the counterclockwise rotation, a new buffer is created for the clockwise rotated image, bringing memory usage temporarily to **200%**.
+    - After saving the rotated image, the buffer is deleted, and memory usage returns to **100%**.
+
+---
+
+### Final Memory Usage:
+- The program will **never** exceed **200%** memory usage. This occurs during operations where both the original image and either the filtered or rotated image are stored in memory.
+- After each operation (filtering or rotating), temporary buffers are deleted, ensuring that memory usage returns to **100%**.
+
+**In conclusion**, memory usage **never exceeds 200%** at any point during execution.
+
+---
+

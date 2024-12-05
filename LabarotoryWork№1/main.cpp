@@ -1,64 +1,40 @@
+/*
+    Andrew Sergienko st135882@student.spbu.ru
+*/
 #include "bmp_reader.h"
-#include "rotation.h"
 #include "filters.h"
 #include <iostream>
+#include <string>
 
-int main(int argc, char *argv[]) {
-    if (argc < 2) {
-        std::cout << "You should write: " << argv[0] << " file_name.bmp" << std::endl;
-        return 0;
-    }
+int main()
+{
+    // Request the user for the path to the image
+    std::string input_filename;
+    std::cout << "Enter the path to the BMP file: ";
+    std::getline(std::cin, input_filename);
 
-    const char* fileName = argv[1];
-    BITMAPFILEHEADER fileHeader;
-    BITMAPINFOHEADER fileInfoHeader;
-    RGBQUAD **rgbInfo = nullptr;
+    BMP_File bmp_file;
 
-// 1. Download the BMP file for initial use
-    if (!readBMP(fileName, fileHeader, fileInfoHeader, rgbInfo)) {
-        return 0;
-    }
-
-// 2. Rotate 90 degrees clockwise, save and free memory
+    // Attempt to load a BMP file, the name is passed from the user
+    if (!bmp_file.Load_BMP_File(input_filename.c_str()))
     {
-        RGBQUAD **rotatedClockwise = rotate90Clockwise(rgbInfo, fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-        std::swap(fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-        if (!writeBMP("rotated_90_clockwise.bmp", fileHeader, fileInfoHeader, rotatedClockwise)) {
-            std::cerr << "Failed to save rotated_90_clockwise.bmp" << std::endl;
-        }
-        cleanupinf(rotatedClockwise, fileInfoHeader.biHeight);
-        std::swap(fileInfoHeader.biWidth, fileInfoHeader.biHeight); // Restore original dimensions
+        std::cerr << "Failed to load BMP file: " << input_filename << std::endl;
+        return -1;  // Terminate the program with an error
     }
+    std::cout << "BMP File loaded successfully." << std::endl;
 
-// 3. Reload the BMP file for the next conversion
-    cleanupinf(rgbInfo, fileInfoHeader.biHeight);
-    if (!readBMP(fileName, fileHeader, fileInfoHeader, rgbInfo)) {
-        return 0;
-    }
+    // Apply a Gaussian filter to the original image
+    ApplyGaussianFilter(&bmp_file, 5, 3.0);  // 5 - kernel size, 3.0 - sigma value
+    bmp_file.Save_BMP_File("BMP_filtered.bmp");  // Save the filtering result
 
-// 4. Rotate 90 degrees counterclockwise, save and free memory
-    {
-        RGBQUAD **rotatedCounterClockwise = rotate90CounterClockwise(rgbInfo, fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-        std::swap(fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-        if (!writeBMP("rotated_90_counterclockwise.bmp", fileHeader, fileInfoHeader, rotatedCounterClockwise)) {
-            std::cerr << "Failed to save rotated_90_counterclockwise.bmp" << std::endl;
-        }
-        cleanupinf(rotatedCounterClockwise, fileInfoHeader.biHeight);
-        std::swap(fileInfoHeader.biWidth, fileInfoHeader.biHeight); // Restore original dimensions
-    }
+    // Counterclockwise rotation
+    auto new_bmp_file_1 = FlipBMP90CounterClockwise(bmp_file);
+    new_bmp_file_1->Save_BMP_File("BMP_counterclockwise.bmp");
+    new_bmp_file_1.reset(); // Delete object
 
-// 5. Reload the BMP file to apply the Gaussian filter
-    cleanupinf(rgbInfo, fileInfoHeader.biHeight);  
-    if (!readBMP(fileName, fileHeader, fileInfoHeader, rgbInfo)) {
-        return 0;
-    }
-
-// 6. Apply Gaussian filter and save the result
-    applyGaussianFilter(rgbInfo, fileInfoHeader.biWidth, fileInfoHeader.biHeight);
-    if (!writeBMP("gaussian_filtered.bmp", fileHeader, fileInfoHeader, rgbInfo)) {
-        std::cerr << "Failed to save gaussian_filtered.bmp" << std::endl;
-    }
-    cleanupinf(rgbInfo, fileInfoHeader.biHeight);
-
+    // Clockwise rotation
+    auto new_bmp_file_2 = FlipBMP90Clockwise(bmp_file);
+    new_bmp_file_2->Save_BMP_File("BMP_clockwise.bmp");
+    new_bmp_file_2.reset(); // Delete object
     return 0;
 }
