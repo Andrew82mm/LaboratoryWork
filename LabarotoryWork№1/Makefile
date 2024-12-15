@@ -8,14 +8,18 @@ SRC_FILES = $(wildcard *.cpp)
 
 OBJ_FILES = $(SRC_FILES:.cpp=.o)
 
+DEP_FILES = $(SRC_FILES:.cpp=.d)
+
 all: $(TARGET)
 
 $(TARGET): $(OBJ_FILES)
 	$(CXX) $(CXXFLAGS) -o $@ $^
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -MMD -c $< -o $@
+
+-include $(DEP_FILES)
 
 clean:
-	rm -f *.o $(TARGET) $(ALLNEWBMP)
+	rm -f *.o $(TARGET) $(ALLNEWBMP) $(DEP_FILES)
 
