@@ -1,7 +1,7 @@
 /*
     Andrew Sergienko st135882@student.spbu.ru
 */
-#include "bmp_reader.h"
+#include "bmp_file.h"
 #include <iostream>
 #include <fstream>
 

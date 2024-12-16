@@ -2,8 +2,8 @@
     Andrew Sergienko st135882@student.spbu.ru
 */
 
-#include "bmp_reader.h"
-#include "filters.h"
+#include "bmp_file.h"
+#include "filter.h"
 #include <iostream>
 #include <string>
 

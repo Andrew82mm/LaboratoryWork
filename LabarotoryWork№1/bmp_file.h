@@ -1,8 +1,8 @@
 /*
     Andrew Sergienko st135882@student.spbu.ru
 */
-#ifndef BMP_READER_H
-#define BMP_READER_H
+#ifndef BMP_FILE_H
+#define BMP_FILE_H
 
 #include <cstdint>
 #include <iostream>

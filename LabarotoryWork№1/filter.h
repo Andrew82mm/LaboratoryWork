@@ -1,7 +1,7 @@
-#ifndef FILTERS_H
-#define FILTERS_H
+#ifndef FILTER_H
+#define FILTER_H
 
-#include "bmp_reader.h"
+#include "bmp_file.h"
 #include <memory>
 #include <vector>
 #include <cmath>

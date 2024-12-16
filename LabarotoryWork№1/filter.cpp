@@ -1,4 +1,4 @@
-#include "filters.h"
+#include "filter.h"
 #include <cmath>
 
 Filter::Filter(int kernelSize, double sigma) {
