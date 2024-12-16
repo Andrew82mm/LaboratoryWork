@@ -5,7 +5,6 @@
 #include <iostream>
 #include <fstream>
 
-// Method for loading BMP file
 bool BMP_File::Load_BMP_File(const char* file_name)
 {
     std::ifstream file(file_name, std::ios::binary);
@@ -33,7 +32,6 @@ bool BMP_File::Load_BMP_File(const char* file_name)
     return true;
 }
 
-// Method for save new file
 void BMP_File::Save_BMP_File(const char* output_filename)
 {
     std::ofstream file(output_filename, std::ios::binary);

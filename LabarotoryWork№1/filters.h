@@ -1,20 +1,23 @@
-/*
-    Andrew Sergienko st135882@student.spbu.ru
-*/
 #ifndef FILTERS_H
 #define FILTERS_H
 
 #include "bmp_reader.h"
 #include <memory>
+#include <vector>
+#include <cmath>
 
-// Apply Gaussian filter
-void ApplyGaussianFilter(BMP_File* bmp_file, int size, double sigma);
+class Filter {
+private:
+    std::vector<std::vector<double>> gaussianKernel;
 
-// Function to flip BMP image 90 degrees clockwise
-std::unique_ptr<BMP_File> FlipBMP90Clockwise(const BMP_File& bmp_file);
-
-// Function to flip BMP image 90 degrees counter-clockwise
-std::unique_ptr<BMP_File> FlipBMP90CounterClockwise(const BMP_File& bmp_file);
+    void GenerateGaussianKernel(int size, double sigma);
+    
+public:
+    Filter(int kernelSize, double sigma);
+    static std::unique_ptr<BMP_File> ApplyGaussianFilter(const BMP_File& bmp_file, const Filter& filter);
+    static std::unique_ptr<BMP_File> FlipBMP90Clockwise(const BMP_File& bmp_file);
+    static std::unique_ptr<BMP_File> FlipBMP90CounterClockwise(const BMP_File& bmp_file);
+};
 
 #endif
 
